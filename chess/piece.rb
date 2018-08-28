@@ -1,10 +1,9 @@
 class Piece
   COLORS = { black: 'black', white: 'white' }
   
-  def initialize(position, board)
+  def initialize(position)
     @color = nil
     @position = position
-    @board = board
   end
   
   def to_s
@@ -16,11 +15,20 @@ class Piece
   end
   
   def valid_moves
+    possible_moves = Array.new(8) { Array.new(8) }
+    return_value = []
     
+    possible_moves.each.with_index do |row, i|
+      row.each.with_index do |pos, j|
+        return_value << [i, j]
+      end 
+    end
+    
+    return_value
   end
   
   def pos=(val)
-    
+    @position = val
   end
   
   def symbol
@@ -30,13 +38,16 @@ class Piece
   def move_into_check?(end_pos)
     
   end
+  
+  def inspect
+    [to_s, @position]
+  end
 end
 
 class NullPiece < Piece
-  def initialize(position, board)
+  def initialize(position)
     @color = nil
     @position = position
-    @board = board
   end
   
   def to_s
@@ -51,9 +62,6 @@ class NullPiece < Piece
   
   end
   
-  def pos=(val)
-    
-  end
   
   def symbol
     

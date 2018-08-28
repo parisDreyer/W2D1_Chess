@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative 'piece'
 
 class Board
@@ -21,9 +22,9 @@ class Board
     @grid.map!.with_index do |row, i|
       row.map!.with_index do |space, j|
         if [0,1,6,7].include?(i)
-          Piece.new([i, j], self)
+          Piece.new([i, j])
         else
-          NullPiece.new([i, j], self)
+          NullPiece.new([i, j])
         end
       end
     end
@@ -34,11 +35,22 @@ class Board
       raise "No piece in starting position"
     end
     
-    unless self[start_pos].valid_moves.include?(end_pos)
-      raise "Invalid move for #{self[start_pos]}"
+
+    moving_piece = self[start_pos]
+    
+    unless moving_piece.valid_moves.include?(end_pos)
+      raise "Invalid move for #{moving_piece}"
     end
-    rescue
-      retry
+    
+    replaced_piece = self[end_pos]
+    moving_piece.pos = end_pos
+
+    if replaced_piece.is_a?(NullPiece)
+      replaced_piece.pos = start_pos
+      self[start_pos], self[end_pos] = replaced_piece, moving_piece
+    else
+      self[start_pos] = NullPiece.new(start_pos)
+    end
   end
 end
 
